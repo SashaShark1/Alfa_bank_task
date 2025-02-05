@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "baseUrl": "../../для Сани/для Сани/src",
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "paths": {
+      "@pp/pages/*": ["./pages/*"],
+      "@pp/fixtures/*": ["./fixtures/*"]
+    },
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "../../для Сани/для Сани/playwright.config.ts",
+    "additional.d.ts"],
+  "exclude": ["node_modules", "build", "dist", "allure-results"]
+}

@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+*.eslintcache
+*.cache
+*.cache/
+
+
+# dotenv environment variables file
+.env
+
+/allure-report/
+/allure-results/
+.idea
+build
+target
+*.iml
+/playwright-report/test-results/
+/playwright-report/
+/playwright/.cache/
+/node_modules
+allurectl
+attachments
+/playwright
