@@ -18,7 +18,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   // globalSetup: require.resolve('./src/setup/global.setup'),
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: 'attachments',
@@ -42,17 +42,16 @@ export default defineConfig({
     headless: false,
   },
   projects: [
-    { name: 'auth setup', testMatch: /.*\.setup\.ts/ },
+    // { name: 'auth setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium:market',
       testDir: './tests',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.auth/user.json',
+        // storageState: 'playwright/.auth/user.json',
       },
-      dependencies: ['auth setup'],
+      // dependencies: ['auth setup'],
     },
-
   ],
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   // reporter: 'null',
@@ -70,5 +69,5 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 5 : undefined,
+  workers: process.env.CI ? 1 : undefined,
 });
