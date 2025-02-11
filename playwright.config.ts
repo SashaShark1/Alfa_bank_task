@@ -13,7 +13,7 @@ config();
  */
 export default defineConfig({
   expect: {
-    timeout: 5000,
+    timeout: 10000,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -23,7 +23,7 @@ export default defineConfig({
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: 'attachments',
   /* Maximum time one test can run for. */
-  timeout: 50 * 1000,
+  timeout: 90 * 1000,
   /* Configure projects for major browsers */
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {

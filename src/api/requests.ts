@@ -1,8 +1,7 @@
 import { type APIRequestContext, type APIResponse, expect, test } from '@playwright/test';
 
 export class MarketAPI {
-  constructor(public request: APIRequestContext) {
-  }
+  constructor(public request: APIRequestContext) {}
 
   async clearBasket(): Promise<APIResponse | undefined> {
     return await test.step(`Выполнить запрос для очистки корзины`, async () => {

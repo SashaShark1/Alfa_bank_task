@@ -1,4 +1,4 @@
-import { expect, Locator, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 export abstract class BasePage {
   readonly page: Page;
@@ -14,10 +14,12 @@ export abstract class BasePage {
     });
   }
 
-  async clickButton(button: Locator, name: string,  force: boolean = false): Promise<void> {
+  async clickButton(button: Locator, name: string, force: boolean = false): Promise<void> {
     if (!force) {
       await test.step(`Нажать кнопку "${name}"`, async () => {
+        const visible = await button.isVisible();
         const enable = await button.isEnabled();
+        expect(visible).toBeTruthy();
         expect(enable).toBeTruthy();
         await button.click();
       });
