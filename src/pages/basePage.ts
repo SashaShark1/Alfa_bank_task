@@ -42,14 +42,6 @@ export abstract class BasePage {
     });
   }
 
-  async hoverElement(locator: Locator, name: string): Promise<void> {
-    await test.step(`Навести мышкой на элемент "${name}"`, async () => {
-      const enable = await locator.isEnabled();
-      expect(enable).toBeTruthy();
-      await locator.hover();
-    });
-  }
-
   async customReload(): Promise<void> {
     await test.step(`Перезагрузить страницу`, async () => {
       await this.page.reload();
@@ -69,11 +61,5 @@ export abstract class BasePage {
 
   async clickOutBlock(): Promise<void> {
     await this.page.mouse.click(0, 0);
-  }
-
-  public async checkURL(text: string, url: string): Promise<void> {
-    await test.step(`Проверить, что выполнен переход на ${text}`, async () => {
-      expect(this.page.url()).toContain(url);
-    });
   }
 }

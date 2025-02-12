@@ -4,7 +4,7 @@ import { AuthPage } from '../pages/authPage';
 
 const authFile = 'playwright/.auth/user.json';
 
-setup('Авторизация как админ', async ({ page }) => {
+setup('Авторизация', async ({ page }) => {
   const authPage = new AuthPage(page);
 
   await authPage.goTo();
