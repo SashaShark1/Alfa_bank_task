@@ -18,7 +18,7 @@ export const test = base.extend<fixturesUi>({
     const product = await marketPage.getProductsWithDiscount();
     await marketPage.clickBuyBtnInCard(product);
     const productName = await marketPage.getProductName(product);
-    const discountPrice = await marketPage.getDiscountProductPrice(product);
+    const discountPrice = await marketPage.getProductPrice(product);
     const data = [discountPrice, productName];
     // await use(product);
     await use(data);

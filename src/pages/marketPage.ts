@@ -4,7 +4,7 @@ import { Verification } from '../helpers/verification';
 import { BasePage } from './basePage';
 
 const verification = new Verification();
-const WAITER = 2000;
+const WAITER = 1000;
 
 export class MarketPage extends BasePage {
   // LOCATORS
@@ -69,15 +69,19 @@ export class MarketPage extends BasePage {
 
   async getCountItem(): Promise<string> {
     await this.page.waitForSelector('#basketContainer> span');
-    // await this.page.waitForTimeout(WAITER);
     return await this.itemCount.textContent();
   }
 
   async clearBasketWithUI(): Promise<void> {
     const items = await this.getCountItem();
     if (parseInt(items)) {
+      if (parseInt(items) === 9) {
+        const product = await this.getProductsWithoutDiscount();
+        await this.clickBuyBtnInCard(product);
+        await this.page.waitForTimeout(WAITER);
+      }
       await this.openBasketPreviewForm();
-      await test.step(`Очистить корзину с товарами:`, async () => {
+      await test.step(`Очистить корзину с товарами`, async () => {
         // const responsePromise = this.page.waitForResponse(
         //   response => response.url().includes('basket/clear') && response.status() === 200,
         // );
@@ -93,7 +97,7 @@ export class MarketPage extends BasePage {
   }
 
   async openOrderForm(): Promise<void> {
-    await test.step(`Перейти на страницу оформления заказа:`, async () => {
+    await test.step(`Перейти на страницу оформления заказа`, async () => {
       await this.clickButton(this.basketForm.orderBtn, 'Перейти в корзину');
       expect(this.page.url(), 'Проверить, что произошёл переход на страницу оформления заказа').toContain(
         'basket',
@@ -102,35 +106,35 @@ export class MarketPage extends BasePage {
   }
 
   async clickBuyBtnInCard(product: Locator): Promise<void> {
-    await test.step(`Кликнуть по кнопке "Купить" возле выбранного товара:`, async () => {
+    await test.step(`Кликнуть по кнопке "Купить" возле выбранного товара`, async () => {
       const buyBtn = product.locator('//button[contains(@class, "actionBuyProduct")]');
       await this.clickButton(buyBtn, 'Купить', true);
     });
   }
 
   async getProductName(product: Locator): Promise<string | null> {
-    return await test.step(`Обратить внимание на название выбранного товара в карточке:`, async () => {
+    return await test.step(`Обратить внимание на название выбранного товара в карточке`, async () => {
       const productNameLocator = product.locator('//div[contains(@class, "product_name")]');
       return await productNameLocator.textContent();
     });
   }
 
-  async getProductPrice(product: Locator): Promise<string | null> {
-    return await test.step(`Обратить внимание на цену выбранного товара в карточке:`, async () => {
+  async getPrice(product: Locator): Promise<string | null> {
+    return await test.step(`Обратить внимание на цену выбранного товара в карточке`, async () => {
       const priceLocator = product.locator('//span[contains(@class, "product_price")]');
       return await priceLocator.textContent();
     });
   }
 
-  async getDiscountProductPrice(product: Locator): Promise<string | null> {
-    return await test.step(`Получить цену выбранного акционного товара в карточке:`, async () => {
-      const price = await this.getProductPrice(product);
+  async getProductPrice(product: Locator): Promise<string | null> {
+    return await test.step(`Получить цену выбранного товара в карточке`, async () => {
+      const price = await this.getPrice(product);
       return price.split('р.')[0];
     });
   }
 
   async fillCountOfProducts(product: Locator, count: string): Promise<void> {
-    await test.step(`Ввести необходимое количество товаров в карточке выбранного товара:`, async () => {
+    await test.step(`Ввести необходимое количество товаров в карточке выбранного товара`, async () => {
       const countField = product.locator('[name="product-enter-count"]');
       await this.fillInput(countField, 'Количество товара', count);
     });
@@ -142,6 +146,41 @@ export class MarketPage extends BasePage {
       await this.page.waitForLoadState('domcontentloaded');
       await paginationBtn.click();
       await this.page.waitForTimeout(500);
+    });
+  }
+
+  async getItemCountInBasket(num: number): Promise<void> {
+    await test.step(` Проверить, что  в корзине  "${num}" позиц(ия/ий)`, async () => {
+      const count = await this.purchase.item.count();
+      expect(count, `Проверить, что в корзине ${num} наименован(ие/ий) товара`).toEqual(num);
+    });
+  }
+
+  async checkProductNameInBasket(product: Locator): Promise<void> {
+    await test.step(`Проверить, что в корзине отображается название выбранного товара`, async () => {
+      const itemText = await this.purchase.item.textContent();
+      const productName = await this.getProductName(product);
+      expect(
+        itemText,
+        `Проверить, что в корзине отображается название выбранного товара - ${productName}`,
+      ).toContain(productName);
+    });
+  }
+
+  async checkProductPriceInBasket(product: Locator): Promise<void> {
+    await test.step(`Проверить, что возле названия выбранного товара отображается цена`, async () => {
+      const itemText = await this.purchase.item.textContent();
+      const price = await this.getProductPrice(product);
+      expect(itemText, `Проверить, что в корзине отображается цена выбранного товара - ${price}`).toContain(
+        price,
+      );
+    });
+  }
+
+  async checkTotalAmountInBasket(sum: number): Promise<void> {
+    await test.step(`Проверить, что стоимость товаров в корзине соответствует - ${sum}`, async () => {
+      const basketPrice = await this.basketForm.price.textContent();
+      expect(sum, `Проверить, что стоимость товаров в корзине соответствует - ${sum}`).toEqual(+basketPrice);
     });
   }
 }
