@@ -61,21 +61,22 @@ export class MarketPage extends BasePage {
   }
 
   async openBasketPreviewForm(): Promise<void> {
-    await test.step(`Открыть корзину с товарами:`, async () => {
+    await test.step(`Открыть корзину с товарами`, async () => {
       await this.clickButton(this.basketBtn, 'Корзина', true);
       await verification.checkVisibleState(this.basketForm.container);
     });
   }
 
-  async getCountItem(): Promise<string> {
+  async getCountItem(): Promise<number> {
     await this.page.waitForSelector('#basketContainer> span');
-    return await this.itemCount.textContent();
+    const text = await this.itemCount.textContent();
+    return Number(text);
   }
 
   async clearBasketWithUI(): Promise<void> {
     const items = await this.getCountItem();
-    if (parseInt(items)) {
-      if (parseInt(items) === 9) {
+    if (items) {
+      if (items === 9) {
         const product = await this.getProductsWithoutDiscount();
         await this.clickBuyBtnInCard(product);
         await this.page.waitForTimeout(WAITER);
@@ -89,7 +90,7 @@ export class MarketPage extends BasePage {
         // await responsePromise;
         await this.page.waitForTimeout(WAITER);
         const count = await this.getCountItem();
-        expect(+count, 'Проверить, что в корзине нет товаров').toEqual(0);
+        expect(count, 'Проверить, что в корзине нет товаров').toEqual(0);
       });
     } else {
       console.log('Корзина пуста');
@@ -149,7 +150,7 @@ export class MarketPage extends BasePage {
     });
   }
 
-  async getItemCountInBasket(num: number): Promise<void> {
+  async checkItemCountInBasket(num: number): Promise<void> {
     await test.step(` Проверить, что  в корзине  "${num}" позиц(ия/ий)`, async () => {
       const count = await this.purchase.item.count();
       expect(count, `Проверить, что в корзине ${num} наименован(ие/ий) товара`).toEqual(num);
