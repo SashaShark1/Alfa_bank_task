@@ -61,21 +61,22 @@ export class MarketPage extends BasePage {
   }
 
   async openBasketPreviewForm(): Promise<void> {
-    await test.step(`Открыть корзину с товарами:`, async () => {
+    await test.step(`Открыть корзину с товарами`, async () => {
       await this.clickButton(this.basketBtn, 'Корзина', true);
       await verification.checkVisibleState(this.basketForm.container);
     });
   }
 
-  async getCountItem(): Promise<string> {
+  async getCountItem(): Promise<number> {
     await this.page.waitForSelector('#basketContainer> span');
-    return await this.itemCount.textContent();
+    const text = await this.itemCount.textContent();
+    return Number(text);
   }
 
   async clearBasketWithUI(): Promise<void> {
     const items = await this.getCountItem();
-    if (parseInt(items)) {
-      if (parseInt(items) === 9) {
+    if (items) {
+      if (items === 9) {
         const product = await this.getProductsWithoutDiscount();
         await this.clickBuyBtnInCard(product);
         await this.page.waitForTimeout(WAITER);
@@ -89,7 +90,7 @@ export class MarketPage extends BasePage {
         // await responsePromise;
         await this.page.waitForTimeout(WAITER);
         const count = await this.getCountItem();
-        expect(+count, 'Проверить, что в корзине нет товаров').toEqual(0);
+        expect(count, 'Проверить, что в корзине нет товаров').toEqual(0);
       });
     } else {
       console.log('Корзина пуста');
@@ -126,10 +127,18 @@ export class MarketPage extends BasePage {
     });
   }
 
-  async getProductPrice(product: Locator): Promise<string | null> {
+  // async getProductPrice(product: Locator): Promise<string | null> {
+  //   return await test.step(`Получить цену выбранного товара в карточке`, async () => {
+  //     const price = await this.getPrice(product);
+  //     return price.split('р.')[0];
+  //   });
+  // }
+
+  async getProductPrice(product: Locator): Promise<number | null> {
     return await test.step(`Получить цену выбранного товара в карточке`, async () => {
-      const price = await this.getPrice(product);
-      return price.split('р.')[0];
+      const fullPrice = await this.getPrice(product);
+      const draftPrice = fullPrice.split('р.')[0];
+      return parseInt(draftPrice);
     });
   }
 
@@ -149,7 +158,7 @@ export class MarketPage extends BasePage {
     });
   }
 
-  async getItemCountInBasket(num: number): Promise<void> {
+  async checkItemCountInBasket(num: number): Promise<void> {
     await test.step(` Проверить, что  в корзине  "${num}" позиц(ия/ий)`, async () => {
       const count = await this.purchase.item.count();
       expect(count, `Проверить, что в корзине ${num} наименован(ие/ий) товара`).toEqual(num);
@@ -172,7 +181,7 @@ export class MarketPage extends BasePage {
       const itemText = await this.purchase.item.textContent();
       const price = await this.getProductPrice(product);
       expect(itemText, `Проверить, что в корзине отображается цена выбранного товара - ${price}`).toContain(
-        price,
+        price.toString(),
       );
     });
   }
@@ -180,7 +189,7 @@ export class MarketPage extends BasePage {
   async checkTotalAmountInBasket(sum: number): Promise<void> {
     await test.step(`Проверить, что стоимость товаров в корзине соответствует - ${sum}`, async () => {
       const basketPrice = await this.basketForm.price.textContent();
-      expect(sum, `Проверить, что стоимость товаров в корзине соответствует - ${sum}`).toEqual(+basketPrice);
+      expect(+basketPrice, `Проверить, что стоимость товаров в корзине соответствует - ${sum}`).toEqual(sum);
     });
   }
 }

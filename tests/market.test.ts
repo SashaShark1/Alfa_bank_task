@@ -20,13 +20,13 @@ test.describe('Оформление заказа', () => {
     await marketPage.clickBuyBtnInCard(product);
     await page.waitForTimeout(WAITER);
     const itemCount = await marketPage.getCountItem();
-    expect(+itemCount, `Проверить, что возле корзины отображется цифра ${MIN_VALUE}`).toEqual(MIN_VALUE);
+    expect(itemCount, `Проверить, что возле корзины отображется цифра ${MIN_VALUE}`).toEqual(MIN_VALUE);
     await marketPage.openBasketPreviewForm();
-    await marketPage.getItemCountInBasket(MIN_VALUE);
+    await marketPage.checkItemCountInBasket(MIN_VALUE);
     await marketPage.checkProductNameInBasket(product);
     await marketPage.checkProductPriceInBasket(product);
     const price = await marketPage.getProductPrice(product);
-    await marketPage.checkTotalAmountInBasket(parseInt(price));
+    await marketPage.checkTotalAmountInBasket(price as number);
     await marketPage.openOrderForm();
   });
 
@@ -35,13 +35,13 @@ test.describe('Оформление заказа', () => {
     await marketPage.clickBuyBtnInCard(product);
     await page.waitForTimeout(WAITER);
     const itemCount = await marketPage.getCountItem();
-    expect(+itemCount, `Проверить, что возле корзины отображется цифра ${MIN_VALUE}`).toEqual(MIN_VALUE);
+    expect(itemCount, `Проверить, что возле корзины отображется цифра ${MIN_VALUE}`).toEqual(MIN_VALUE);
     await marketPage.openBasketPreviewForm();
-    await marketPage.getItemCountInBasket(MIN_VALUE);
+    await marketPage.checkItemCountInBasket(MIN_VALUE);
     await marketPage.checkProductNameInBasket(product);
     await marketPage.checkProductPriceInBasket(product);
     const price = await marketPage.getProductPrice(product);
-    await marketPage.checkTotalAmountInBasket(parseInt(price));
+    await marketPage.checkTotalAmountInBasket(price as number);
     await marketPage.openOrderForm();
   });
 
@@ -54,13 +54,13 @@ test.describe('Оформление заказа', () => {
     await marketPage.clickBuyBtnInCard(product);
     await page.waitForTimeout(WAITER);
     const itemCount = await marketPage.getCountItem();
-    expect(+itemCount, `Проверить, что возле корзины отображется цифра ${MAX_VALUE}`).toEqual(MAX_VALUE);
+    expect(itemCount, `Проверить, что возле корзины отображется цифра ${MAX_VALUE}`).toEqual(MAX_VALUE);
     await marketPage.openBasketPreviewForm();
-    await marketPage.getItemCountInBasket(MIN_VALUE);
+    await marketPage.checkItemCountInBasket(MIN_VALUE);
     await marketPage.checkProductNameInBasket(product);
     const itemText = await marketPage.purchase.item.textContent();
     const discountPrice = await marketPage.getProductPrice(product);
-    const totalAmount = parseInt(discountPrice) * MAX_VALUE;
+    const totalAmount = (discountPrice as number) * MAX_VALUE;
     expect(
       itemText,
       `Проверить, что в корзине отображается стоимость ${MAX_VALUE} товаров по акционной цене - ${discountPrice}`,
@@ -83,7 +83,7 @@ test.describe('Оформление заказа', () => {
         await marketPage.clickBuyBtnInCard(product);
         await page.waitForTimeout(WAITER);
         const itemCount = await marketPage.getCountItem();
-        expect(+itemCount, `Проверить, что возле корзины отображется цифра ${i}`).toEqual(i + 1);
+        expect(itemCount, `Проверить, что возле корзины отображется цифра ${i}`).toEqual(i + 1);
         const productName = await marketPage.getProductName(product);
         nameArr.push(productName);
         const discountPrice = await marketPage.getProductPrice(product);
@@ -91,7 +91,7 @@ test.describe('Оформление заказа', () => {
       }
     });
     await marketPage.openBasketPreviewForm();
-    await marketPage.getItemCountInBasket(MAX_VALUE);
+    await marketPage.checkItemCountInBasket(MAX_VALUE);
 
     await test.step(`Проверить, что в корзине отображаются все добавленные товары`, async () => {
       for (let i = 1; i < MAX_VALUE; i++) {
