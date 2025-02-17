@@ -26,7 +26,7 @@ test.describe('Оформление заказа', () => {
     await marketPage.checkProductNameInBasket(product);
     await marketPage.checkProductPriceInBasket(product);
     const price = await marketPage.getProductPrice(product);
-    await marketPage.checkTotalAmountInBasket(parseInt(price));
+    await marketPage.checkTotalAmountInBasket(price as number);
     await marketPage.openOrderForm();
   });
 
@@ -41,7 +41,7 @@ test.describe('Оформление заказа', () => {
     await marketPage.checkProductNameInBasket(product);
     await marketPage.checkProductPriceInBasket(product);
     const price = await marketPage.getProductPrice(product);
-    await marketPage.checkTotalAmountInBasket(parseInt(price));
+    await marketPage.checkTotalAmountInBasket(price as number);
     await marketPage.openOrderForm();
   });
 
@@ -60,7 +60,7 @@ test.describe('Оформление заказа', () => {
     await marketPage.checkProductNameInBasket(product);
     const itemText = await marketPage.purchase.item.textContent();
     const discountPrice = await marketPage.getProductPrice(product);
-    const totalAmount = parseInt(discountPrice) * MAX_VALUE;
+    const totalAmount = (discountPrice as number) * MAX_VALUE;
     expect(
       itemText,
       `Проверить, что в корзине отображается стоимость ${MAX_VALUE} товаров по акционной цене - ${discountPrice}`,
